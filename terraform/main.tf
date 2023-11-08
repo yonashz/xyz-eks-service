@@ -98,7 +98,7 @@ module "vpc_cni_irsa" {
   tags = local.tags
 }
 
-resource "kubernetes_service_account" "service-account" {
+resource "kubernetes_service_account" "service-account-lb" {
   metadata {
     name = "aws-load-balancer-controller"
     namespace = "kube-system"
@@ -109,6 +109,20 @@ resource "kubernetes_service_account" "service-account" {
     annotations = {
         "eks.amazonaws.com/role-arn" = module.aws_load_balancer_controller_irsa.iam_role_arn
         "eks.amazonaws.com/sts-regional-endpoints" = "true"
+    }
+  }
+}
+
+resource "kubernetes_service_account" "service-account-dns" {
+  metadata {
+    name = "external-dns"
+    namespace = "kube-system"
+    labels = {
+        "app.kubernetes.io/name"= "external-dns"
+        "app.kubernetes.io/component"= "controller"
+    }
+    annotations = {
+        "eks.amazonaws.com/role-arn" = module.external_dns_irsa.iam_role_arn
     }
   }
 }
@@ -130,6 +144,23 @@ module "aws_load_balancer_controller_irsa" {
   tags = local.tags
 }
 
+module "external_dns_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.0"
+
+  role_name_prefix      = "EXTERNAL-DNS-IRSA"
+  attach_external_dns_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:external-dns"]
+    }
+  }
+
+  tags = local.tags
+}
+
 # Deploy aws-load-balancer-controller using Helm
 resource "helm_release" "lb" {
   name       = "aws-load-balancer-controller"
@@ -137,7 +168,7 @@ resource "helm_release" "lb" {
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
   depends_on = [
-    kubernetes_service_account.service-account
+    kubernetes_service_account.service-account-lb
   ]
 
   set {

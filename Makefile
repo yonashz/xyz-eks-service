@@ -25,6 +25,13 @@ push:
 	docker tag xyz-app:latest 568903012602.dkr.ecr.us-east-2.amazonaws.com/xyz-images:$(TAG)
 	docker push 568903012602.dkr.ecr.us-east-2.amazonaws.com/xyz-images:$(TAG)
 
+
+.PHONY: helm 
+helm:
+	helm package helm/xyz-helm
+	aws ecr get-login-password --region us-east-2 | helm registry login --username AWS --password-stdin 568903012602.dkr.ecr.us-east-2.amazonaws.com
+	helm push xyz-helm-$(TAG).tgz oci://568903012602.dkr.ecr.us-east-2.amazonaws.com/
+
 .PHONY: init
 init:
 	terraform init
@@ -41,11 +48,11 @@ plan:
 
 .PHONY: apply
 apply:
-    terraform apply --auto-approve
+	terraform apply --auto-approve
 
 .PHONY: destroy
 destroy:
-    terraform destroy 
+	terraform destroy 
 
 .PHONY: all
 all: setup build push init validate plan apply destroy
