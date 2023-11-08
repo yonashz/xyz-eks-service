@@ -46,9 +46,9 @@ module "eks" {
   # aws-auth configmap
   manage_aws_auth_configmap = true
 
-  aws_auth_roles = [
+  aws_auth_users = [
     {
-      rolearn  = local.provisioner_role
+      userarn  = local.user_arn
       username = "provisioner"
       groups   = ["system:masters"]
     },
@@ -107,8 +107,8 @@ resource "kubernetes_service_account" "service-account" {
         "app.kubernetes.io/component"= "controller"
     }
     annotations = {
-      "eks.amazonaws.com/role-arn" = module.aws_load_balancer_controller_irsa.arn
-      "eks.amazonaws.com/sts-regional-endpoints" = "true"
+        "eks.amazonaws.com/role-arn" = module.aws_load_balancer_controller_irsa.iam_role_arn
+        "eks.amazonaws.com/sts-regional-endpoints" = "true"
     }
   }
 }
@@ -128,16 +128,6 @@ module "aws_load_balancer_controller_irsa" {
   }
 
   tags = local.tags
-}
-
-resource "helm_release" "lb_controller" {
-  name       = "lb_controller"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "nginx"
-
-  values = [
-    file("${path.module}/nginx-values.yaml")
-  ]
 }
 
 # Deploy aws-load-balancer-controller using Helm

@@ -9,6 +9,6 @@ COPY main.go ./
 
 RUN go build -o /xyz-service
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["/xyz-service"]
