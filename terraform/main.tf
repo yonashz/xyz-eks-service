@@ -212,7 +212,7 @@ resource "helm_release" "xyz-helm" {
   repository_username = data.aws_ecr_authorization_token.token.user_name
   repository_password = data.aws_ecr_authorization_token.token.password
   chart      = "xyz-helm"
-  version    = "0.1.0"
+  version    = "0.3.0"
   namespace  = "xyz"
   create_namespace = true
   lifecycle {

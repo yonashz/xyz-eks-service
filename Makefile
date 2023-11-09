@@ -21,7 +21,7 @@ build:
 
 .PHONY: test
 test:
-	go test -v -cover .
+	go test -v -cover main_test.go
 
 .PHONY: push
 push:
@@ -32,9 +32,9 @@ push:
 
 .PHONY: helm 
 helm:
-	helm package helm/xyz-helm
+	helm package helm/xyz-app
 	aws ecr get-login-password --region us-east-2 | helm registry login --username AWS --password-stdin 568903012602.dkr.ecr.us-east-2.amazonaws.com
-	helm push xyz-helm-$(TAG).tgz oci://568903012602.dkr.ecr.us-east-2.amazonaws.com/
+	helm push xyz-app-$(TAG).tgz oci://568903012602.dkr.ecr.us-east-2.amazonaws.com/
 
 .PHONY: init
 init:
@@ -53,6 +53,12 @@ plan:
 .PHONY: apply
 apply:
 	terraform apply --auto-approve
+
+.PHONY: testCluster
+testCluster: 
+	cd tests
+	go mod tidy 
+	go test -v -cover .
 
 .PHONY: destroy
 destroy:
