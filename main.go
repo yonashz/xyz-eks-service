@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
     "log"
     "net/http"
 	"time"
@@ -14,18 +13,19 @@ type Payload struct {
 }
 
 func timestampedPayload(w http.ResponseWriter, r *http.Request){
-	fmt.Println("Endpoint Hit: getPayload")
+	log.Println("Endpoint Hit: payload")
 	t := time.Now()
 	p := Payload {
 		Message: "It Follows is a cinema masterpiece.",
 		Timestamp: t.Unix(),
 	}
 	w.Header().Set("Content-Type", "application/json")
+	log.Println(p)
 	json.NewEncoder(w).Encode(p)
 }
 
 func handleRequests() {
-    http.HandleFunc("/getPayload", timestampedPayload)
+    http.HandleFunc("/payload", timestampedPayload)
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

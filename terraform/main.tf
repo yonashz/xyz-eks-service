@@ -218,4 +218,8 @@ resource "helm_release" "xyz-helm" {
   lifecycle {
     ignore_changes = [repository_password]
   }
+  set {
+    name  = "ingressHost"
+    value = local.host
+  }
 }

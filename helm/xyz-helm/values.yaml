@@ -5,9 +5,9 @@
 replicaCount: 1
 
 imageRegistry: 568903012602.dkr.ecr.us-east-2.amazonaws.com
-dockerTag: 0.1.0
+dockerTag: 0.2.0
 pullPolicy: Always
-
+ingressHost: ""
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

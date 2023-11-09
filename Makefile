@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 IMAGE_NAME=xyz-app
-TAG=0.1.0
+TAG=0.2.0
 ACCOUNT_ID=568903012602
 # Ensure S3, ECR are created
 .PHONY: setup

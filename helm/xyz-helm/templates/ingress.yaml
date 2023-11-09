@@ -7,12 +7,13 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/tags: environment=sandbox,team=xyz
+    alb.ingress.kubernetes.io/healthcheck-path: /payload
 spec:
   rules:
-    - host: xyz.zyonash.com
+    - host: {{ .Values.ingressHost }}
       http:
         paths:
-          - path: /getPayload
+          - path: /payload
             pathType: Prefix
             backend:
               service:
