@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: xyz-deployment
-  namespace: xyz
 spec:
   replicas: 1
   selector:

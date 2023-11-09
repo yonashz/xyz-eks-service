@@ -14,17 +14,14 @@ type Payload struct {
 }
 
 func timestampedPayload(w http.ResponseWriter, r *http.Request){
+	fmt.Println("Endpoint Hit: getPayload")
 	t := time.Now()
 	p := Payload {
 		Message: "It Follows is a cinema masterpiece.",
 		Timestamp: t.Unix(),
 	}
-	jsonData, err := json.Marshal(p)
-	if err != nil {
-		fmt.Printf("could not marshal json: %s\n", err)
-		return
-	}
-	fmt.Printf("json data: %s\n", jsonData)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(p)
 }
 
 func handleRequests() {

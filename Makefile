@@ -19,6 +19,10 @@ setup:
 build:
 	docker build -t $(IMAGE_NAME) .
 
+.PHONY: test
+test:
+	go test -v -cover .
+
 .PHONY: push
 push:
 	aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 568903012602.dkr.ecr.us-east-2.amazonaws.com
@@ -53,6 +57,9 @@ apply:
 .PHONY: destroy
 destroy:
 	terraform destroy 
+	aws s3 rb s3://xyz-tfstate --force
+	aws ecr delete-repository xyz-images --force
+	aws ecr delete-repository xyz-helm --force
 
 .PHONY: all
-all: setup build push init validate plan apply destroy
+all: setup build test push helm init validate plan apply

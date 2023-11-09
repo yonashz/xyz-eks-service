@@ -3,6 +3,7 @@ FROM golang:1.21.4-alpine
 WORKDIR /app
 
 COPY go.mod ./
+RUN go get -u github.com/stretchr/testify
 RUN go mod download
 
 COPY main.go ./
