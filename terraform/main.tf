@@ -1,9 +1,9 @@
 terraform {
   required_version = ">= 1.5.7"
   backend "s3" {
-      bucket = "xyz-tfstate"
-      key = "tfstate"
-      region = "us-east-2"
+    bucket = "xyz-tfstate"
+    key    = "tfstate"
+    region = "us-east-2"
   }
 }
 
@@ -19,11 +19,11 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.19.0"
 
-  cluster_name = local.cluster_name
-  cluster_version = local.cluster_version
-  cluster_endpoint_public_access  = true
+  cluster_name                   = local.cluster_name
+  cluster_version                = local.cluster_version
+  cluster_endpoint_public_access = true
 
-  vpc_id = module.vpc.vpc_id
+  vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   enable_irsa = true
@@ -101,29 +101,29 @@ module "vpc_cni_irsa" {
 
 resource "kubernetes_service_account" "service-account-lb" {
   metadata {
-    name = "aws-load-balancer-controller"
+    name      = "aws-load-balancer-controller"
     namespace = "kube-system"
     labels = {
-        "app.kubernetes.io/name"= "aws-load-balancer-controller"
-        "app.kubernetes.io/component"= "controller"
+      "app.kubernetes.io/name"      = "aws-load-balancer-controller"
+      "app.kubernetes.io/component" = "controller"
     }
     annotations = {
-        "eks.amazonaws.com/role-arn" = module.aws_load_balancer_controller_irsa.iam_role_arn
-        "eks.amazonaws.com/sts-regional-endpoints" = "true"
+      "eks.amazonaws.com/role-arn"               = module.aws_load_balancer_controller_irsa.iam_role_arn
+      "eks.amazonaws.com/sts-regional-endpoints" = "true"
     }
   }
 }
 
 resource "kubernetes_service_account" "service-account-dns" {
   metadata {
-    name = "external-dns"
+    name      = "external-dns"
     namespace = "kube-system"
     labels = {
-        "app.kubernetes.io/name"= "external-dns"
-        "app.kubernetes.io/component"= "controller"
+      "app.kubernetes.io/name"      = "external-dns"
+      "app.kubernetes.io/component" = "controller"
     }
     annotations = {
-        "eks.amazonaws.com/role-arn" = module.external_dns_irsa.iam_role_arn
+      "eks.amazonaws.com/role-arn" = module.external_dns_irsa.iam_role_arn
     }
   }
 }
@@ -132,7 +132,7 @@ module "aws_load_balancer_controller_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.0"
 
-  role_name_prefix      = "LB-IRSA"
+  role_name_prefix                       = "LB-IRSA"
   attach_load_balancer_controller_policy = true
 
   oidc_providers = {
@@ -149,7 +149,7 @@ module "external_dns_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.0"
 
-  role_name_prefix      = "EXTERNAL-DNS-IRSA"
+  role_name_prefix           = "EXTERNAL-DNS-IRSA"
   attach_external_dns_policy = true
 
   oidc_providers = {
@@ -206,15 +206,15 @@ resource "helm_release" "lb" {
 data "aws_ecr_authorization_token" "token" {}
 
 # Deploy xyz app using Helm
-resource "helm_release" "xyz-helm" {
-  name       = "xyz-helm"
-  repository = "oci://568903012602.dkr.ecr.us-east-2.amazonaws.com"
+resource "helm_release" "xyz-app" {
+  name                = "xyz-app"
+  repository          = "oci://568903012602.dkr.ecr.us-east-2.amazonaws.com"
   repository_username = data.aws_ecr_authorization_token.token.user_name
   repository_password = data.aws_ecr_authorization_token.token.password
-  chart      = "xyz-helm"
-  version    = "0.3.0"
-  namespace  = "xyz"
-  create_namespace = true
+  chart               = "xyz-app"
+  version             = "0.3.0"
+  namespace           = "xyz"
+  create_namespace    = true
   lifecycle {
     ignore_changes = [repository_password]
   }
