@@ -10,6 +10,7 @@ spec:
     path: xyz-app
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
+  project: default
   destination:
     server: {{ .Values.spec.destination.server }}
     namespace: xyz
