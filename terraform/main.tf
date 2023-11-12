@@ -136,37 +136,6 @@ resource "kubernetes_service_account" "service-account-dns" {
   }
 }
 
-resource "kubernetes_service_account" "service-account-external-secrets" {
-  metadata {
-    name      = "external-secrets"
-    namespace = "kube-system"
-    labels = {
-      "app.kubernetes.io/name"      = "external-secrets"
-      "app.kubernetes.io/component" = "controller"
-    }
-    annotations = {
-      "eks.amazonaws.com/role-arn" = module.external_secrets_irsa.iam_role_arn
-    }
-  }
-}
-
-module "external_secrets_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.0"
-
-  role_name_prefix                       = "EXTERNAL-SECRETS-IRSA"
-  attach_external_secrets_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:external-secrets"]
-    }
-  }
-
-  tags = local.tags
-}
-
 module "aws_load_balancer_controller_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.0"
@@ -208,71 +177,4 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
   version          = "5.51.1"
-}
-
-resource "argocd_repository" "helm_ecr" {
-  repo = "568903012602.dkr.ecr.us-east-2.amazonaws.com"
-  type = "helm"
-  name = "xyz-app"
-  enable_oci = true
-  depends_on = [helm_release.argocd]
-}
-
-# Deploy aws-load-balancer-controller using Helm
-resource "helm_release" "lb" {
-  name       = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
-  depends_on = [
-    kubernetes_service_account.service-account-lb
-  ]
-
-  set {
-    name  = "region"
-    value = local.region
-  }
-
-  set {
-    name  = "vpcId"
-    value = module.vpc.vpc_id
-  }
-
-  set {
-    name  = "image.repository"
-    value = "602401143452.dkr.ecr.us-east-2.amazonaws.com/amazon/aws-load-balancer-controller"
-  }
-
-  set {
-    name  = "serviceAccount.create"
-    value = "false"
-  }
-
-  set {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  }
-
-  set {
-    name  = "clusterName"
-    value = module.eks.cluster_name
-  }
-}
-
-data "aws_ecr_authorization_token" "token" {}
-
-# Deploy xyz app using Helm
-resource "helm_release" "xyz-app" {
-  name                = "xyz-app"
-  repository          = "oci://568903012602.dkr.ecr.us-east-2.amazonaws.com/"
-  repository_username = data.aws_ecr_authorization_token.token.user_name
-  repository_password = data.aws_ecr_authorization_token.token.password
-  chart               = "xyz-app"
-  version             = local.app_version
-  namespace           = "xyz"
-  create_namespace    = true
-  set {
-    name  = "ingressHost"
-    value = local.host
-  }
 }

@@ -25,7 +25,3 @@ provider "helm" {
     }
   }
 }
-
-provider "argocd" {
-  core = true
-}
