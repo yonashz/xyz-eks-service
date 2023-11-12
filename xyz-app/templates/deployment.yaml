@@ -19,4 +19,4 @@ spec:
           imagePullPolicy: {{ .Values.pullPolicy }}
           ports:
             - name: app-port
-              containerPort: 80
+              containerPort: 8080
