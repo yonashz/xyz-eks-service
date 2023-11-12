@@ -6,6 +6,9 @@ metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
+  syncPolicy:
+    automated:
+      prune: true
   source:
     path: xyz-app
     repoURL: {{ .Values.spec.source.repoURL }}
