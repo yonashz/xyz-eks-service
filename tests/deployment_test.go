@@ -62,6 +62,7 @@ func TestDeployment(t *testing.T) {
     defer res.Body.Close()
     var j Payload
     json.NewDecoder(res.Body).Decode(&j)
+	fmt.Println("Checking if the service is returning a valid payload...")
     assert.Equal(t, j.Message, want)
     assert.NotNil(t, j.Timestamp)
 
