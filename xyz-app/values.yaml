@@ -1,0 +1,13 @@
+# Default values for xyz-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+imageRegistry: 568903012602.dkr.ecr.us-east-2.amazonaws.com
+dockerTag: 0.2.0
+pullPolicy: Always
+ingressHost: ""
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""

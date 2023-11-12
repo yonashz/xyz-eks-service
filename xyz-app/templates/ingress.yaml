@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: xyz-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: environment=sandbox,team=xyz
+    alb.ingress.kubernetes.io/healthcheck-path: /payload
+    external-dns.alpha.kubernetes.io/hostname: xyz.zyonash.com
+spec:
+  rules:
+    - host: {{ .Values.ingressHost }}
+      http:
+        paths:
+          - path: /payload
+            pathType: Prefix
+            backend:
+              service:
+                name: xyz-service
+                port:
+                  number: 80
