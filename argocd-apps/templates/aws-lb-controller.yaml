@@ -10,6 +10,14 @@ spec:
     targetRevision: 1.6.2
     helm:
       releaseName: aws-load-balancer-controller
+      values: |
+        region: us-east-2
+        image:
+          repository: 602401143452.dkr.ecr.us-east-2.amazonaws.com/amazon/aws-load-balancer-controller
+        serviceAccount:
+          create: false
+          name: aws-load-balancer-controller
+        clusterName: xyz-cluster
   project: default
   destination:
     server: "https://kubernetes.default.svc"
