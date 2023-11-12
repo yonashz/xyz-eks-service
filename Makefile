@@ -17,16 +17,16 @@ setup:
 
 .PHONY: build
 build:
-	docker build -t $(IMAGE_NAME) .
+	docker build --target development -t $(IMAGE_NAME):$(TAG) .
 
 .PHONY: test
 test:
-	go test -v -cover .
+	docker build --progress=plain --target test -t $(IMAGE_NAME) .
 
 .PHONY: push
-push:
+push:	
 	aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 568903012602.dkr.ecr.us-east-2.amazonaws.com
-	docker tag xyz-app:latest 568903012602.dkr.ecr.us-east-2.amazonaws.com/xyz-images:$(TAG)
+	docker tag xyz-app:$(TAG) 568903012602.dkr.ecr.us-east-2.amazonaws.com/xyz-images:$(TAG)
 	docker push 568903012602.dkr.ecr.us-east-2.amazonaws.com/xyz-images:$(TAG)
 
 .PHONY: init
@@ -48,15 +48,17 @@ apply:
 
 .PHONY: testCluster
 testCluster: 
-	cd tests
-	go mod tidy 
-	go test -v -cover .
+	cd tests && go mod tidy && go clean -testcache && go test -v -cover .
 
 .PHONY: destroy
 destroy:
-	cd terraform && terraform destroy 
-	aws s3 rb s3://xyz-tfstate --force
-	aws ecr delete-repository xyz-images --force
+	@if aws s3 ls "s3://xyz-tfstate" 2>&1 | grep -q 'NoSuchBucket'; then \
+		echo "State bucket doesn't exist, nothing to do."; \
+	else \
+		cd terraform && terraform destroy; \
+		aws s3 rb s3://xyz-tfstate --force; \
+	fi
+	aws ecr delete-repository --repository-name xyz-images --force
 
 .PHONY: all
-all: setup build test push init validate plan apply
+all: setup build test push init validate plan apply testCluster

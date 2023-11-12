@@ -8,6 +8,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/tags: environment=sandbox,team=xyz
     alb.ingress.kubernetes.io/healthcheck-path: /payload
+    external-dns.alpha.kubernetes.io/hostname: xyz.zyonash.com
 spec:
   rules:
     - host: {{ .Values.ingressHost }}

@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+spec:
+  syncPolicy:
+    automated:
+      prune: true
+  source:
+    chart: "external-dns"
+    repoURL: "https://charts.bitnami.com/bitnami"
+    targetRevision: 6.28.4
+    helm:
+      releaseName: external-dns
+      values: |
+        sources: 
+        - "service"
+        - "ingress"
+        domainFilters: 
+        - "zyonash.com"
+        provider: aws
+        txtOwnerId: xyz
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
