@@ -14,7 +14,7 @@ spec:
         app.kubernetes.io/name: xyz-app
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: xyz-app
           image: {{ .Values.imageRegistry }}/xyz-images:{{ .Values.dockerTag }}
           imagePullPolicy: {{ .Values.pullPolicy }}
           ports:

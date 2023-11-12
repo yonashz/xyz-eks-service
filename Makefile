@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 IMAGE_NAME=xyz-app
-CHARTVERSION=0.3.0
+CHARTVERSION=0.4.0
 TAG=0.2.0
 ACCOUNT_ID=568903012602
 # Ensure S3, ECR are created
