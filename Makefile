@@ -60,7 +60,7 @@ argoInit:
 	--repo https://github.com/yonashz/xyz-eks-service.git \
 	--path argocd-apps
 	argocd app sync apps
-	argocd app sync -l app.kubernetes.io/instance=apps
+	argocd app sync -l argocd.argoproj.io/instance=apps
 	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
 .PHONY: testCluster
@@ -78,4 +78,4 @@ destroy:
 	aws ecr delete-repository --repository-name xyz-images --force
 
 .PHONY: all
-all: setup build test push init validate plan apply updateKubeConfig argoInit 
+all: setup build test push init validate plan apply updateKubeConfig argoInit testCluster

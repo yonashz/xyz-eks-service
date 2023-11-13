@@ -3,4 +3,4 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/yonashz/xyz-eks-service/
-    targetRevision: develop
+    targetRevision: HEAD

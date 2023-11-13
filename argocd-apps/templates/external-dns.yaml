@@ -21,6 +21,7 @@ spec:
         - "zyonash.com"
         provider: aws
         txtOwnerId: xyz
+        policy: sync
   project: default
   destination:
     server: "https://kubernetes.default.svc"
