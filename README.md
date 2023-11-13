@@ -26,7 +26,7 @@ The xyz-eks-service repository holds all the necessary code to deploy the soluti
   - Production recommendation would be to use a secrets manager like Hashicorp Vault or AWS Secrets Manager.  IAM Identity Center offers secure ways to generate temporary credentials as well.
 - Docker installed (I used version 24.0.6, build ed223bc, and I used [Docker Desktop](https://www.docker.com/products/docker-desktop/) to manage my install)
   - Docker Desktop is free for non-enterprises.  Use [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/) if there are any licensing issues
-- A domain and hosted zone in Route 53 if hitting the service from the Ingress (ALB). 
+- A domain and hosted zone in Route 53.   `external-dns` will handle creating the alias record to the ALB. 
 
 Optional: If you want to run the Go service locally, or run the test, you'll need to install [Go](https://go.dev/doc/install)
 
@@ -45,8 +45,9 @@ init: Runs a Terraform init.
 validate: Runs a Terraform validate.
 plan: Runs a Terraform plan.
 apply: Runs a Terraform apply.
+argoInit: Runs a one-time deploy of the root-app (to leverage the App-of-apps strategy) in ArgoCD, and syncs the applications.
 testCluster: Runs a small testing suite in Go to test for a healthy deployment and validate that the application's payload is correct.
-destroy: Runs a Terraform destroy.  Also deletes the S3 bucket and ECR repositories.
+destroy: Runs a Terraform destroy.  Also deletes the S3 bucket and ECR repository.
 all: Runs all steps in sequential order, except destroy.
 ```
 
