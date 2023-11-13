@@ -46,6 +46,23 @@ plan:
 apply:
 	cd terraform && terraform apply --auto-approve
 
+.PHONY: updateKubeConfig
+updateKubeConfig:
+	aws eks update-kubeconfig --region us-east-2 --name xyz-cluster
+
+.PHONY: argoInit
+argoInit:
+	kubectl config set-context --current --namespace=argocd
+	argocd login --core
+	argocd app create apps \
+	--dest-namespace argocd \
+	--dest-server https://kubernetes.default.svc \
+	--repo https://github.com/yonashz/xyz-eks-service.git \
+	--path argocd-apps
+	argocd app sync apps
+	argocd app sync -l app.kubernetes.io/instance=apps
+	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
 .PHONY: testCluster
 testCluster: 
 	cd tests && go mod tidy && go clean -testcache && go test -v -cover .
@@ -61,4 +78,4 @@ destroy:
 	aws ecr delete-repository --repository-name xyz-images --force
 
 .PHONY: all
-all: setup build test push init validate plan apply testCluster
+all: setup build test push init validate plan apply updateKubeConfig argoInit 
