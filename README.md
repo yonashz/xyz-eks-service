@@ -62,6 +62,25 @@ Finally, the Go application itself is deployed to EKS through ArgoCD.
 
 ---
 
+## Architecture Diagram
+
+![architecture](architecture.jpg)
+
+## Helpful Tips
+
+To login to the ArgoCD UI without directly exposing the API, port-forwarding can be used to gain local access:
+
+```
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+The initial password for the `admin` account can be obtained by running:
+
+```
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+This is obviously not to be used this way in Production. Access to the ArgoCD UI should be private, and locked down with some kind of SSO + RBAC.
 ## Cleanup
 
 Cleanup is done using `make destroy`.  This will tear down all Terraform managed components, and delete the S3 bucket and ECR repo.
