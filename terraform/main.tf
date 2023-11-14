@@ -181,5 +181,9 @@ resource "helm_release" "argocd" {
     name  = "global.image.repository"
     value = "hub.docker.com/argoproj/argocd"
   }
+  set {
+    name = "global.image.tag"
+    value = "v2.6.15"
+  }
   depends_on = [module.eks]
 }
