@@ -1,6 +1,7 @@
 name: 'Docker Build, Test, Tag and Push'
 
 on:
+  workflow_dispatch:
   push: 
     branches: 
       - main
