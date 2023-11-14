@@ -1,7 +1,6 @@
 SHELL := /bin/bash
 IMAGE_NAME=xyz-app
-CHARTVERSION=0.4.0
-TAG=0.2.0
+TAG=0.1.0
 ACCOUNT_ID=568903012602
 # Ensure S3, ECR are created
 .PHONY: setup
@@ -60,6 +59,7 @@ argoInit:
 	--repo https://github.com/yonashz/xyz-eks-service.git \
 	--path argocd-apps
 	argocd app sync apps
+	sleep 10
 	argocd app sync -l argocd.argoproj.io/instance=apps
 	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
@@ -69,6 +69,9 @@ testCluster:
 
 .PHONY: destroy
 destroy:
+	kubectl config set-context --current --namespace=argocd
+	argocd login --core
+	argocd app delete apps --cascade 
 	@if aws s3 ls "s3://xyz-tfstate" 2>&1 | grep -q 'NoSuchBucket'; then \
 		echo "State bucket doesn't exist, nothing to do."; \
 	else \
@@ -78,4 +81,4 @@ destroy:
 	aws ecr delete-repository --repository-name xyz-images --force
 
 .PHONY: all
-all: setup build test push init validate plan apply updateKubeConfig argoInit testCluster
+all: setup build test push init validate plan apply updateKubeConfig argoInit
