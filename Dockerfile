@@ -12,6 +12,7 @@ FROM build as test
 COPY main_test.go ./
 RUN go test -v -cover .
 
-FROM build as development
+FROM golang:1.21.4-alpine as development
+COPY --from=build /xyz-service /xyz-service
 EXPOSE 8080
 CMD ["/xyz-service"]
