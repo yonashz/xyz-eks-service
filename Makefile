@@ -59,7 +59,7 @@ argoInit:
 	--repo https://github.com/yonashz/xyz-eks-service.git \
 	--path argocd-apps
 	argocd app sync apps
-	sleep 10
+	sleep 5
 	argocd app sync -l argocd.argoproj.io/instance=apps
 	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
@@ -71,7 +71,9 @@ testCluster:
 destroy:
 	kubectl config set-context --current --namespace=argocd
 	argocd login --core
-	argocd app delete apps --cascade 
+	argocd app delete xyz-app
+	sleep 30 # Give the LB controller time to delete resources
+	argocd app delete apps --cascade
 	@if aws s3 ls "s3://xyz-tfstate" 2>&1 | grep -q 'NoSuchBucket'; then \
 		echo "State bucket doesn't exist, nothing to do."; \
 	else \
