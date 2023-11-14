@@ -21,7 +21,6 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: arn:aws:iam::568903012602:role/provisioner
-        role-session-name: provisionersession
         aws-region: ${{ vars.AWS_DEFAULT_REGION }}
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
