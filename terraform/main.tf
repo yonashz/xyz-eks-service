@@ -179,7 +179,7 @@ resource "helm_release" "argocd" {
   version          = "5.51.1"
   set {
     name  = "global.image.repository"
-    value = "hub.docker.com/argoproj/argocd"
+    value = "argoproj/argocd"
   }
   set {
     name = "global.image.tag"
