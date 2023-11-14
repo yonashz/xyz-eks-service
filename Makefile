@@ -58,6 +58,7 @@ argoInit:
 	--dest-server https://kubernetes.default.svc \
 	--repo https://github.com/yonashz/xyz-eks-service.git \
 	--path argocd-apps
+	sleep 5
 	argocd app sync apps
 	sleep 5
 	argocd app sync -l argocd.argoproj.io/instance=apps
