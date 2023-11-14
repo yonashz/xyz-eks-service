@@ -1,0 +1,17 @@
+name: 'Test application'
+
+on:
+  pull_request:
+    types: 
+      - opened
+      - reopened 
+    branches:
+      - 'main'
+jobs:
+  test_application:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v4
+      - run: make build
+      - run: make test

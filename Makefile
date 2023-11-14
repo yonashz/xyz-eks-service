@@ -84,3 +84,6 @@ destroy:
 
 .PHONY: all
 all: setup build test push init validate plan apply updateKubeConfig argoInit
+
+.PHONY: allTF
+allTF: setup init validate plan apply updateKubeConfig argoInit

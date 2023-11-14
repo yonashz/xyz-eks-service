@@ -16,7 +16,7 @@ func timestampedPayload(w http.ResponseWriter, r *http.Request){
 	log.Println("Endpoint Hit: payload")
 	t := time.Now()
 	p := Payload {
-		Message: "It Follows is a cinema masterpiece.",
+		Message: "Automate all the things!",
 		Timestamp: t.Unix(),
 	}
 	w.Header().Set("Content-Type", "application/json")
