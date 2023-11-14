@@ -70,6 +70,7 @@ testCluster:
 
 .PHONY: destroy
 destroy:
+	aws eks update-kubeconfig --region us-east-2 --name xyz-cluster
 	kubectl config set-context --current --namespace=argocd
 	argocd login --core
 	argocd app delete xyz-app
