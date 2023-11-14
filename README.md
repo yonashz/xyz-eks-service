@@ -82,8 +82,9 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ```
 
 This is obviously not to be used this way in Production. Access to the ArgoCD UI should be private, and locked down with some kind of SSO + RBAC.
+
+---
+
 ## Cleanup
 
-Cleanup is done using `make destroy`.  This will tear down all Terraform managed components, and delete the S3 bucket and ECR repo.
-
-> EKS and all underlying components take some special care to destroy properly without getting stuck on dependencies not being destroyed.  A full teardown is typically more involved than just running `terraform destroy`.
+Cleanup is done using `make destroy`.  This will delete the `apps` ArgoCD Application in cascading fashion, tear down all Terraform managed components, and delete the S3 bucket and ECR repo.
