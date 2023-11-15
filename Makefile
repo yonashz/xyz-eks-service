@@ -79,8 +79,7 @@ destroy:
 	@if aws s3 ls "s3://xyz-tfstate" 2>&1 | grep -q 'NoSuchBucket'; then \
 		echo "State bucket doesn't exist, nothing to do."; \
 	else \
-		cd terraform && terraform init && terraform destroy; \
-		#aws s3 rb s3://xyz-tfstate --force; \
+		cd terraform && terraform init && terraform destroy --auto-approve; \
 	fi
 	aws ecr delete-repository --repository-name xyz-images --force
 
