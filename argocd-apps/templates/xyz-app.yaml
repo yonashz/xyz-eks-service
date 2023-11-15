@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: xyz-app
   namespace: argocd
-    annotations:
+  annotations:
     argocd.argoproj.io/sync-wave: "1"
   finalizers:
   - resources-finalizer.argocd.argoproj.io
