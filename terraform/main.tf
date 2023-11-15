@@ -185,13 +185,5 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
   version          = "5.51.1"
-  set {
-    name  = "global.image.repository"
-    value = "argoproj/argocd"
-  }
-  set {
-    name = "global.image.tag"
-    value = "v2.6.15"
-  }
   depends_on = [module.eks]
 }
