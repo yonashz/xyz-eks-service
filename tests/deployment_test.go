@@ -53,7 +53,7 @@ func TestDeployment(t *testing.T) {
 
 	// Test the API via public endpoint
 	requestURL := "http://xyz.zyonash.com/payload"
-	want := "It Follows is a cinema masterpiece."
+	want := "Automate all the things!"
 	res, err := http.Get(requestURL)
 	if err != nil {
 		fmt.Printf("error making http request: %s\n", err)

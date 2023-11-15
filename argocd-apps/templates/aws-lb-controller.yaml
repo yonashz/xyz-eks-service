@@ -3,10 +3,9 @@ kind: Application
 metadata:
   name: aws-load-balancer-controller
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
-  syncPolicy:
-    automated:
-      prune: true
   source:
     chart: "aws-load-balancer-controller"
     repoURL: "https://aws.github.io/eks-charts"

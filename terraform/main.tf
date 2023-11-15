@@ -58,6 +58,14 @@ module "eks" {
   aws_auth_users = [
     {
       userarn  = local.user_arn
+      username = "assumeprovisionerrole"
+      groups   = ["system:masters"]
+    },
+  ]
+
+  aws_auth_roles = [
+    {
+      rolearn  = local.role_arn
       username = "provisioner"
       groups   = ["system:masters"]
     },
@@ -177,4 +185,13 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
   version          = "5.51.1"
+  set {
+    name  = "global.image.repository"
+    value = "argoproj/argocd"
+  }
+  set {
+    name = "global.image.tag"
+    value = "v2.6.15"
+  }
+  depends_on = [module.eks]
 }

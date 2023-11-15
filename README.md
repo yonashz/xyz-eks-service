@@ -1,5 +1,7 @@
 # xyz-eks-service
-Code and documentation to create an EKS cluster, bootstrap it, and deploy/expose a simple Go REST API.  A Makefile exists as the entrypoint into each individual component of the process, along with an `all` target to run everything at once.
+Code and documentation to create an EKS cluster, bootstrap it, and deploy/expose a simple Go REST API.  A Makefile exists as the entrypoint into each individual component of the process, along with an `all` target to run everything at once.  
+
+GitHub Actions workflows are included to make deployment easier.  New container images are built and pushed on merges to main.  The deploy process for all infrastructure can be manually kicked off from GitHub.
 
 ---
 
@@ -15,8 +17,9 @@ The app is unit tested, containerized and pushed to ECR. The underlying platform
 
 ## Usage
 
-## Prerequisites
+## Prerequisites:
 
+### Running Locally
 The xyz-eks-service repository holds all the necessary code to deploy the solution from a local machine, however, there are a few prerequisites: 
 
 - [Terraform](https://developer.hashicorp.com/terraform/install) installed (version 1.5.7 or higher)
@@ -26,6 +29,11 @@ The xyz-eks-service repository holds all the necessary code to deploy the soluti
   - Production recommendation would be to use a secrets manager like Hashicorp Vault or AWS Secrets Manager.  IAM Identity Center offers secure ways to generate temporary credentials as well.
 - Docker installed (I used version 24.0.6, build ed223bc, and I used [Docker Desktop](https://www.docker.com/products/docker-desktop/) to manage my install)
   - Docker Desktop is free for non-enterprises.  Use [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/) if there are any licensing issues
+
+### Running from GitHub
+- Access to the GitHub Actions workflows in the repository
+
+### General
 - A domain and hosted zone in Route 53.   `external-dns` will handle creating the alias record to the ALB. 
 
 Optional: If you want to run the Go service locally, or run the test, you'll need to install [Go](https://go.dev/doc/install)
@@ -48,6 +56,7 @@ apply: Runs a Terraform apply.
 argoInit: Runs a one-time deploy of the root-app (to leverage the App-of-apps strategy) in ArgoCD, and syncs the applications.
 testCluster: Runs a small testing suite in Go to test for a healthy deployment and validate that the application's payload is correct.
 destroy: Runs a Terraform destroy.  Also deletes the S3 bucket and ECR repository.
+allTF: Runs all Terraform steps, skips the Docker steps.
 all: Runs all steps in sequential order, except destroy.
 ```
 

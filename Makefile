@@ -58,17 +58,19 @@ argoInit:
 	--dest-server https://kubernetes.default.svc \
 	--repo https://github.com/yonashz/xyz-eks-service.git \
 	--path argocd-apps
-	argocd app sync apps
-	sleep 5
+	argocd app wait apps --operation && argocd app sync apps
+	sleep 10
 	argocd app sync -l argocd.argoproj.io/instance=apps
 	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
 .PHONY: testCluster
 testCluster: 
+	aws eks update-kubeconfig --region us-east-2 --name xyz-cluster
 	cd tests && go mod tidy && go clean -testcache && go test -v -cover .
 
 .PHONY: destroy
 destroy:
+	aws eks update-kubeconfig --region us-east-2 --name xyz-cluster
 	kubectl config set-context --current --namespace=argocd
 	argocd login --core
 	argocd app delete xyz-app
@@ -77,10 +79,12 @@ destroy:
 	@if aws s3 ls "s3://xyz-tfstate" 2>&1 | grep -q 'NoSuchBucket'; then \
 		echo "State bucket doesn't exist, nothing to do."; \
 	else \
-		cd terraform && terraform destroy; \
-		aws s3 rb s3://xyz-tfstate --force; \
+		cd terraform && terraform init && terraform destroy --auto-approve; \
 	fi
 	aws ecr delete-repository --repository-name xyz-images --force
 
 .PHONY: all
 all: setup build test push init validate plan apply updateKubeConfig argoInit
+
+.PHONY: allTF
+allTF: setup init validate plan apply updateKubeConfig argoInit

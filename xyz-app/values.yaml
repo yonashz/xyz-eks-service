@@ -7,7 +7,7 @@ replicaCount: 1
 imageRegistry: 568903012602.dkr.ecr.us-east-2.amazonaws.com
 dockerTag: 0.1.0
 pullPolicy: Always
-ingressHost: ""
+ingressHost: "xyz.zyonash.com"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

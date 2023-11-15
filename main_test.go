@@ -10,7 +10,7 @@ import (
 
 func TestPayload(t *testing.T){
 
-    want := "It Follows is a cinema masterpiece."
+    want := "Automate all the things!"
     req := httptest.NewRequest(http.MethodGet, "/payload", nil)
     w := httptest.NewRecorder()
     timestampedPayload(w, req)

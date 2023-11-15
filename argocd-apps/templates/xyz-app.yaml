@@ -3,12 +3,11 @@ kind: Application
 metadata:
   name: xyz-app
   namespace: argocd
+    annotations:
+    argocd.argoproj.io/sync-wave: "1"
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
-  syncPolicy:
-    automated:
-      prune: true
   source:
     path: xyz-app
     repoURL: {{ .Values.spec.source.repoURL }}
