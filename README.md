@@ -8,7 +8,7 @@ GitHub Actions workflows are included to make deployment easier.  New container 
 ## Overview
 The Go app listens on port 8080 and returns a JSON payload consisting of a static message and a Unix format timestamp:
 ```
-{"Message":"It Follows is a cinema masterpiece.","Timestamp":1699532803}
+{"Message":"Automate all the things!","Timestamp":1699532803}
 ```
 
 The app is unit tested, containerized and pushed to ECR. The underlying platform running the application is Amazon EKS.  EKS is fully configured and deployed through Terraform.  ArgoCD is then deployed on top of EKS to run the Go app and some core Kubernetes add-ons (external-dns, AWS load balancer controller). Once the EKS cluster is stood up and both the app and core Kubernetes components are fully deployed by ArgoCD, a final test is run to ensure everything is healthy.
@@ -108,4 +108,4 @@ This is obviously not to be used this way in Production. Access to the ArgoCD UI
 
 ## Cleanup
 
-Cleanup is done using `make destroy`.  This will delete the `apps` ArgoCD Application in cascading fashion, tear down all Terraform managed components, and delete the S3 bucket and ECR repo.
+Cleanup is done using `make destroy`.  This will delete the `apps` ArgoCD Application in cascading fashion, tear down all Terraform managed components, and delete the ECR repo.
