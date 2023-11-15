@@ -63,6 +63,14 @@ module "eks" {
     },
   ]
 
+  aws_auth_roles = [
+    {
+      rolearn  = local.role_arn
+      username = "provisioner"
+      groups   = ["system:masters"]
+    },
+  ]
+
   tags = local.tags
 }
 

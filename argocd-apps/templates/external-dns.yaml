@@ -4,9 +4,6 @@ metadata:
   name: external-dns
   namespace: argocd
 spec:
-  syncPolicy:
-    automated:
-      prune: true
   source:
     chart: "external-dns"
     repoURL: "https://charts.bitnami.com/bitnami"
