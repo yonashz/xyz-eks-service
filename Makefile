@@ -80,7 +80,7 @@ destroy:
 		echo "State bucket doesn't exist, nothing to do."; \
 	else \
 		cd terraform && terraform init && terraform destroy; \
-		aws s3 rb s3://xyz-tfstate --force; \
+		#aws s3 rb s3://xyz-tfstate --force; \
 	fi
 	aws ecr delete-repository --repository-name xyz-images --force
 
