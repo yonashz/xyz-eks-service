@@ -42,10 +42,22 @@ Optional: If you want to run the Go service locally, or run the test, you'll nee
 
 ## Deployment
 
-Deployment is completely handled by the Makefile bundled with the repository. The available targets are:
+GitHub Actions workflows are provided as an easy way to kick off deployments.  Available workflows include:
 
 ```
-setup: Ensures S3 bucket and ECR repositories are created.
+└── workflows
+    ├── build-and-push.yaml - Run Docker build, test, tag and push - automated on merges, can be run manually
+    ├── deploy-platform.yaml - Deploy all infrastructure managed by Terraform, deploy and configure ArgoCD
+    ├── final-test.yaml - Run a smoke test
+    ├── run-all.yaml - Run everything at once - this combines the Docker workflow with Terraform
+    ├── teardown.yaml - Destroy everything 
+    └── test.yaml - Run a simple unit test - this is kicked off on each opened/merged pull request 
+```
+
+A Makefile handles most of the heavy lifting.  Available Makefile targets include:
+
+```
+setup: Ensures S3 bucket and ECR repository are created.
 build: Runs the Docker build against the Go service.
 test: Runs a small unit test against the Go service.
 push: Tags and pushes the Docker image to ECR.
@@ -53,9 +65,9 @@ init: Runs a Terraform init.
 validate: Runs a Terraform validate.
 plan: Runs a Terraform plan.
 apply: Runs a Terraform apply.
-argoInit: Runs a one-time deploy of the root-app (to leverage the App-of-apps strategy) in ArgoCD, and syncs the applications.
+argoInit: Runs a one-time deploy of the root app & child apps (App-of-apps strategy) in ArgoCD, and syncs the applications.
 testCluster: Runs a small testing suite in Go to test for a healthy deployment and validate that the application's payload is correct.
-destroy: Runs a Terraform destroy.  Also deletes the S3 bucket and ECR repository.
+destroy: Deletes the ArgoCD applications, then runs a Terraform destroy.  Also deletes the ECR repository.
 allTF: Runs all Terraform steps, skips the Docker steps.
 all: Runs all steps in sequential order, except destroy.
 ```
