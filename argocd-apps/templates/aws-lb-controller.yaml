@@ -14,8 +14,6 @@ spec:
       releaseName: aws-load-balancer-controller
       values: |
         region: us-east-2
-        image:
-          repository: 602401143452.dkr.ecr.us-east-2.amazonaws.com/amazon/aws-load-balancer-controller
         serviceAccount:
           create: false
           name: aws-load-balancer-controller
