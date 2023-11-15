@@ -58,7 +58,7 @@ module "eks" {
   aws_auth_users = [
     {
       userarn  = local.user_arn
-      username = "provisioner"
+      username = "assumeprovisionerrole"
       groups   = ["system:masters"]
     },
   ]
