@@ -65,6 +65,7 @@ argoInit:
 
 .PHONY: testCluster
 testCluster: 
+    aws eks update-kubeconfig --region us-east-2 --name xyz-cluster
 	cd tests && go mod tidy && go clean -testcache && go test -v -cover .
 
 .PHONY: destroy
