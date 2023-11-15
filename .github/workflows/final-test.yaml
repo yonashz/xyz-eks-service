@@ -14,7 +14,7 @@ jobs:
       - name: Checkout 
         uses: actions/checkout@v4
       - run: | 
-            curl -OL https://golang.org/dl/go1.21.4.linux-amd64.tar.gz
-            sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.4.linux-amd64.tar.gz
-            export PATH=$PATH:/usr/local/go/bin
+          curl -OL https://golang.org/dl/go1.21.4.linux-amd64.tar.gz
+          sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.4.linux-amd64.tar.gz
+          export PATH=$PATH:/usr/local/go/bin
       - run: make testCluster
