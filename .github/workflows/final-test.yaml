@@ -1,9 +1,5 @@
 name: 'Smoke test'
 
-permissions:
-  id-token: write # This is required for requesting the JWT
-  contents: read  # This is required for actions/checkout
-
 on:
   workflow_dispatch:
 
@@ -13,8 +9,11 @@ jobs:
     steps:
       - name: Checkout 
         uses: actions/checkout@v4
-      - run: | 
-          wget https://golang.org/dl/go1.21.4.linux-amd64.tar.gz
-          sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.4.linux-amd64.tar.gz
+      - name: Install Go
+        run: | 
+          wget https://dl.google.com/go/go1.21.4.linux-amd64.tar.gz
+          sudo rm -rf /usr/local/go
+          sudo tar -C /usr/local -xzf go1.21.4.linux-amd64.tar.gz
           export PATH=$PATH:/usr/local/go/bin
-      - run: make testCluster
+      - name: Run smoke test
+        run: make testCluster
