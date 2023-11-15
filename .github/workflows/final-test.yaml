@@ -15,5 +15,6 @@ jobs:
           sudo rm -rf /usr/local/go
           sudo tar -C /usr/local -xzf go1.21.4.linux-amd64.tar.gz
           export PATH=$PATH:/usr/local/go/bin
+      - run: go version
       - name: Run smoke test
         run: make testCluster
