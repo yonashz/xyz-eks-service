@@ -60,13 +60,9 @@ argoInit:
 	--path argocd-apps
 	argocd app wait apps --operation && argocd app sync apps
 	sleep 5
-	argocd app wait aws-load-balancer-controller --operation && argocd app sync aws-load-balancer-controller
-	sleep 5
 	argocd app wait external-dns --operation && argocd app sync external-dns
 	sleep 5
-	argocd app wait external-dns --operation && argocd app sync external-dns
-	sleep 5
-	argocd app wait xyz-app --operation && argocd app sync xyz-app
+	argocd app sync -l argocd.argoproj.io/instance=apps
 	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
 .PHONY: testCluster
